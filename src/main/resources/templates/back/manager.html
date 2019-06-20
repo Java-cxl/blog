@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<title>后台管理</title>
+		<link rel="stylesheet" href="/bootstrap/css/bootstrap.css" />
+		<style>
+			#main{
+				width: 80%;
+				margin: 0 auto;
+			}
+			.tr-click{
+				background-color: #C9C9C9;
+			}
+			.form-search{
+				margin:5px auto;
+			}
+			.pager-num{
+				color: #007BFF;
+				font-size: 16px;
+			}
+			a:hover{
+				cursor: pointer;
+			}
+			#test{
+				width:200px;
+				margin: 10% auto;
+				height: 100px;
+				position:absolute;
+				top:50%;
+				left:50%;
+				margin-top:-50px;
+				margin-left:-100px;
+				z-index: 999;
+				color: block;
+				font-size: 18px;
+				font-weight: bolder;
+				text-align: center;
+				display: none;
+			}
+			#addLink-div{
+				position:absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				background-color: #C6C8CA;
+				z-index: 999;
+				opacity: 0.8;
+				display: none;
+			}
+			#addLink-div div{
+				width: 30%;
+				height: 50%;
+				margin: auto;
+				position: absolute;
+				top: 0; left: 0; bottom: 0; right: 0;
+				background-color: #000000;
+				border-radius: 8%;
+			}
+			@media only screen and (min-width: 100px) and (max-width: 700px) {
+				#addLink-div div{
+					width: 80%;
+					height: 45%;
+					margin: auto;
+					position: absolute;
+					top: 0; left: 0; bottom: 0; right: 0;
+				}
+			}
+			.input{
+				width: 80%;
+				border: 2px #FF9400 solid;
+				background-color: transparent;
+				margin: auto;
+				margin-top: 5%;
+				color: #FF9400;
+			}
+			.input::-webkit-input-placeholder { /* WebKit browsers */
+
+				color: #FF9400;
+				font-weight: bold;
+			}
+
+			.input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+
+				color: #FF9400;
+				font-weight: bold;
+			}
+
+			.input::-moz-placeholder { /* Mozilla Firefox 19+ */
+
+				color: #FF9400;
+				font-weight: bold;
+			}
+
+			.input:-ms-input-placeholder { /* Internet Explorer 10+ */
+
+				color: #FF9400;
+				font-weight: bold;
+			}
+			#addLink-div h3{
+				color: #FF9400;
+			}
+			#addLink-div span{
+				position: absolute;
+				right: 15px;
+				top: 15px;
+				cursor: pointer;
+				color: #FF9400;
+				font-size: 16px;
+			}
+			.hiddenId{
+				display: none;
+			}
+			.page-bottom{
+				width: 80%;
+				position: absolute;
+				bottom: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="main">
+			<!--路径导航-->
+			<div class="row">
+				<div class="col-12">
+					<ol class="breadcrumb">
+					  <li><a href="/index">首页</a></li>
+					  <li class="active">后台管理</li>
+					</ol>
+				</div>
+			</div>			
+			<!--导航条-->
+			<div class="row">
+				<div class="col-12 daohang">
+					<ul class="nav nav-tabs">
+					  <li role="presentation" class="active"><a id="linkBtn">链接管理</a></li>
+					  <li role="presentation"><a id="userBtn">用户管理</a></li>
+					</ul>
+				</div>
+			</div>
+			<!--链接管理-->
+			<div class="row" id="linkTab">
+				<div class="col-12">
+					<form id="linkSearch" class="form-inline form-search" method="post" action="/mgr/manager">
+					  <div class="form-group">
+					    <input type="text" name="title" class="form-control" id="exampleInputName2" placeholder="请输入标题关键字">
+					  </div>
+					  <div class="form-group">
+							<select id="linkType" name="type" class="form-control">
+							  <option value="-1">--请选择类型--</option>
+							  <option value="1">常用链接</option>
+							  <option value="2">文档链接</option>
+							</select>					  
+					  </div>
+						<input name="linkPage" type="hidden" th:value="${page.linkPage}">
+						<input name="linkPages" type="hidden" th:value="${page.linkPages}">
+					  <button id="linkSearchBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-search"></span>搜索</button>
+					  <button class="btn btn-success" id="addLink" type="button"><span class="glyphicon glyphicon-plus-sign"></span>新增</button>
+					  <button class="btn btn-success" id="addManyLink" type="button"><span class="glyphicon glyphicon-plus-sign"></span>批量导入</button>
+					  <button class="btn btn-info"><span class="glyphicon glyphicon-edit"></span>修改</button>
+					  <button class="btn btn-danger" id="delLinkBtn" type="button"><span class="glyphicon glyphicon-trash"></span>删除</button>
+
+					
+					<table class="table table-hover linkTable">
+					  <tr>
+					  	<th>链接标题</th>
+					  	<th>链接网址</th>
+					  	<th>连接类型</th>
+					  </tr>
+					  <tr th:each="link,linkState:${linkList}">
+						<td class="hiddenId" th:text="${link.id}"></td>
+					  	<td th:text="${link.title}"></td>
+					  	<td th:text="${link.link}"></td>
+					  	<td th:text="${link.type}"></td>
+					  </tr>
+					</table>
+					<!--分页-->
+					<div class="page-bottom">
+					<nav aria-label="...">
+					  <ul class="pager">
+					  	<li><b class="pager-num" th:text="${page.linkPage}+'/'+${page.linkPages}"></b></li>
+					    <li class="previous"><a id="linkPrevious"><span aria-hidden="true">&larr;</span>上一页</a></li>
+					    <li class="next"><a id="linkNext">下一页<span aria-hidden="true">&rarr;</span></a></li>
+					  </ul>
+					</nav>
+					</div>
+					</form>
+				</div>
+			</div>
+			<input type="hidden" name="selectId"/>
+			<!--用户管理-->
+			<div class="row" id="userTab">
+				<div class="col-12">
+					<form id="userSearch" class="form-inline form-search" method="post" action="/mgr/manager" >
+					  <div class="form-group">
+					    <input type="text" name="name" class="form-control" id="exampleInputName2" placeholder="请输入用户名">
+					  </div>
+					  <div class="form-group">
+							<select name="role" class="form-control">
+							  <option value="-1">--请选择用户角色--</option>
+							  <option value="1">管理员</option>
+							  <option value="0">普通用户</option>
+							</select>					  
+					  </div>
+						<input name="userPage" type="hidden" th:value="${page.userPage}">
+						<input name="userPages" type="hidden" th:value="${page.userPages}">
+					  <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span>搜索</button>
+					  <button class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span>新增</button>
+					  <button class="btn btn-info"><span class="glyphicon glyphicon-edit"></span>修改</button>
+					  <button class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>删除</button>
+
+					<table class="table table-hover">
+					  <tr>
+					  	<th width="33%">用户名</th>
+					  	<th width="33%">用户角色</th>
+					  	<th width="33%">注册时间</th>
+					  </tr>
+					  <tr th:each="user,userState:${userList}">
+						<td th:text="${user.name}"></td>
+						<td th:text="${user.role}"></td>
+						<td th:text="${user.createDate}"></td>
+					  </tr>
+					</table>
+					<!--分页-->
+					<div class="page-bottom">
+					<nav aria-label="...">
+					  <ul class="pager">
+					  	<li><b class="pager-num" th:text="${page.userPage}+'/'+${page.userPages}"></b></li>
+					    <li class="previous"><a id="userPrevious"><span aria-hidden="true">&larr;</span>上一页</a></li>
+					    <li class="next"><a id="userNext">下一页<span aria-hidden="true">&rarr;</span></a></li>
+					  </ul>
+					</nav>
+					</div>
+					</form>
+				</div>
+			</div>
+			<div id="test"></div>
+			<div id="addLink-div">
+				<div>
+					<span class="glyphicon glyphicon-remove"></span>
+					<form>
+						<h3 align="center">新增链接</h3>
+						<input type="text" name="addTitle" class="form-control input" placeholder="请输入连接标题">
+						<input type="text" name="addLink" class="form-control input" placeholder="请输入链接地址">
+						<select class="form-control input" id="addType">
+							<option value="-1">请选择链接类型</option>
+							<option value="1">常用链接</option>
+							<option value="2">文档链接</option>
+						</select>
+						<button type="button" id="addBtn" class="btn btn-block input">增加</button>
+					</form>
+				</div>
+			</div>
+			
+		</div>
+		<script type="text/javascript" src="/jquery/jquery.min.js" ></script>
+		<script>
+			$(function(){
+
+				$("#userTab").css("display","none");
+				
+				$(".daohang ul li").click(function(){
+					$(".daohang ul li").removeClass("active");
+					$(this).addClass("active");
+				});
+				
+				$("#linkBtn").click(function(){
+					$("#userTab").css("display","none");
+					$("#linkTab").css("display","block");
+                    $("input[name='selectId']").val("");
+				});
+				
+				$("#userBtn").click(function(){
+					$("#linkTab").css("display","none");
+					$("#userTab").css("display","block");
+                    $("input[name='selectId']").val("");
+				});
+				
+				$("#main").on("click","tr",function () {
+                    $("table tr").removeClass("tr-click");
+                    $(this).addClass("tr-click");
+                    var id= $(this).find("td:first").html();
+                    $("input[name='selectId']").val(id);
+                })
+
+
+				$("#linkNext").click(function () {
+					var page=$("input[name='linkPage']").val();
+					var pages=$("input[name='linkPages']").val();
+					if(page==pages||page>pages){
+					    message("已经是最后一页了~~");
+					}else{
+                        $("input[name='linkPage']").val(Number(page)+1);
+                        $("#linkSearch").submit();
+					}
+                });
+
+                $("#linkPrevious").click(function () {
+                    var page=$("input[name='linkPage']").val();
+                    if(page==1){
+                        message("已经是第一页了~~");
+                    }else{
+                        $("input[name='linkPage']").val(Number(page)-1);
+                        $("#linkSearch").submit();
+					}
+                });
+
+                $("#linkSearchBtn").click(function () {
+					$("#linkSearch").submit();
+                });
+				//用户查询下一页操作
+                $("#userNext").click(function () {
+                    var page=$("input[name='userPage']").val();
+                    var pages=$("input[name='userPages']").val();
+                    if(page==pages||page>pages){
+                        message("已经是最后一页了~~");
+                    }else{
+                        $("input[name='userPage']").val(Number(page)+1);
+                        $("#userSearch").submit();
+                    }
+                });
+                //用户查询上一页操作
+                $("#userPrevious").click(function () {
+                    var page=$("input[name='userPage']").val();
+                    if(page==1){
+                        message("已经是第一页了~~");
+                    }else{
+                        $("input[name='userPage']").val(Number(page)-1);
+                        $("#userSearch").submit();
+                    }
+                });
+				//用户查询表单提交操作
+                $("#userSearchBtn").click(function () {
+                    $("#userSearch").submit();
+                });
+
+                //定义一个显示消息的div
+                function message(text) {
+                    var test=$("#test");
+                    test.html(text);
+					test.css("display","block");
+					test.fadeOut(3000);
+                }
+
+				//单击新增按钮显示出来新增链接的div
+                $("#addLink").click(function(){
+                    $("#addLink-div").show();
+                });
+
+                //关闭按钮隐藏div
+                $("#addLink-div span").click(function(){
+                    divcolse();
+                });
+
+                //隐藏添加链接的div
+                function divcolse(){
+                    $("#addLink-div").hide();
+                };
+
+                //触发添加链接事件
+				$("#addBtn").click(function (){
+				    var link=$("input[name='addLink']").val();
+				    var title=$("input[name='addTitle']").val();
+				    var type=$("#addType").val();
+					$.ajax({
+						url:"/mgr/addLink",
+						type:"post",
+						data:{"title":title,"link":link,"type":type},
+						dataType:"json",
+						success:function (data) {
+							if(data.result==true){
+							    message("新增链接成功！");
+								divcolse();
+							}else {
+							    message("新增链接失败！")
+							}
+                        }
+					})
+				});
+
+				//获取选中行数据的id
+				function  getSelectId() {
+                    var id=$("input[name='selectId']").val();
+                    if(id=="" || id==null){
+                        message("请选择一条数据！");
+                    }
+                    return id;
+                }
+
+                //触发删除链接按钮
+				$("#delLinkBtn").click(function () {
+					var id=getSelectId();
+					if(id!=""){
+						$.ajax({
+							url:"/mgr/delLink",
+							type:"post",
+							data:{"id":id},
+							dataType:"json",
+							success:function (data) {
+								if(data.result==true){
+									selLink();
+								    message("删除成功！");
+								}else {
+								    message("删除失败！")
+								}
+	                        },
+							error:function(){
+								message("系统错误！");
+							}
+						})
+					}
+                });
+                
+                //异步查询链接
+				function selLink(){
+					var page=$("input[name='linkPage']").val();
+					var title=$("input[name='title']").val();
+					var type=$("#linkType").val();
+					$.ajax({
+						url:"/mgr/selLink",
+						type:"post",
+						data:{"linkPage":page,"title":title,"type":type},
+						dataType:"json",
+						success:function(data){
+							var linkList=data.result;
+							var html="<tr><th>链接标题</th><th>链接网址</th><th>连接类型</th></tr>";
+							for ( i in linkList) {
+								html=html+"<tr>"+
+								"<td class=\"hiddenId\">"+linkList[i].id+"</td>"+
+							  	"<td>"+linkList[i].title+"</td>"+
+							  	"<td>"+linkList[i].link+"</td>"+
+							  	"<td>"+linkList[i].type+"</td>"+
+							  "</tr>"
+							}
+							$(".linkTable").replaceWith("<table class=\"table table-hover linkTable\">"+html+"</table>");
+						},
+						error:function(){
+							message("系统错误！！！");
+						}
+					})
+                }
+
+                //批量导入按钮
+				$("#addManyLink").click(function () {
+					location.href="/mgr/toImportLinks";
+                })
+                
+			})
+		</script>
+	</body>
+</html>

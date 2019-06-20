@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.cxl.mapper.LinkMapper">
+    <!--查询链接-->
+    <select id="selLinkList" resultType="Link">
+        select * from links
+        <where>
+            <if test="type!=-1">
+              type=#{type}
+            </if>
+            <if test="title!=null and title!=''">
+                and title like '%${title}%'
+            </if>
+            <if test="begin!=-1 and end !=-1">
+                limit #{begin},#{end}
+            </if>
+        </where>
+
+    </select>
+
+    <!--新增链接-->
+    <insert id="addLink" parameterType="Link">
+        INSERT INTO `blog`.`links` (`title`, `link`, `type`, `createDate`) VALUES (#{title},#{link},#{type},#{createDate});
+    </insert>
+
+    <!--修改链接-->
+    <update id="updateLink" parameterType="Link">
+        UPDATE `blog`.`links` SET  `title`=#{title}, `link`=#{link}, `type`=#{type}, updateDate=#{updateDate} WHERE id=#{id};
+    </update>
+
+    <!--删除链接-->
+    <delete id="delLink" parameterType="int">
+        delete from links where id=#{id}
+    </delete>
+
+    <!--查询链接的总条数-->
+    <select id="selLinkCount" resultType="int">
+        select count(1) from links
+        <where>
+            <if test="type!=-1">
+                type=#{type}
+            </if>
+            <if test="title!=null and title!=''">
+                and title like '%${title}%'
+            </if>
+        </where>
+    </select>
+
+</mapper>

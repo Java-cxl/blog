@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    	<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title></title>
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
+		<style>
+			body{
+				background: url(img/pc-register.jpg) no-repeat;
+				background-size: 100%;
+			}
+			#loginDiv{
+				/*border: 1px #FF9400 solid;*/
+				border-radius: 8%;
+				width:30%; 
+				margin:2% auto;
+			}
+			.input{
+				height: 35px;
+				width: 100%;
+				border: 2px #FF9400 solid;
+				background-color: transparent;
+				font-size: 16px;
+				color: #FF9400;
+				text-indent: 0.5em;
+				border-radius: 2%;
+				
+			}
+			input::-webkit-input-placeholder { /* WebKit browsers */ 
+				text-indent: 0.5em;
+				color: #FF9400; 
+				font-size: 14px;
+				font-weight: bold;
+			} 
+			
+			input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */ 
+				text-indent: 0.5em;
+				color: #FF9400; 
+				font-size: 14px;
+				font-weight: bold;
+			} 
+			
+			input::-moz-placeholder { /* Mozilla Firefox 19+ */ 
+				text-indent: 0.5em;
+				color: #FF9400; 
+				font-size: 14px;
+				font-weight: bold;
+			} 
+			
+			input:-ms-input-placeholder { /* Internet Explorer 10+ */ 
+				text-indent: 0.5em;
+				color: #FF9400;
+				font-size: 14px;
+				font-weight: bold;
+			} 
+			
+			.row{
+				margin-bottom: 20px;
+			}
+			
+			span{
+				font-size: 28px;
+				color: #FF9400;
+			}
+			button{
+				background-color: #FF9400;
+				color: white;
+			}
+			p{
+				text-align: right;
+				text-decoration: underline;
+			}
+			h1{
+				text-align: center;
+				color: #FF9400;
+			}
+			p a{
+				color: #FF9400;
+			}
+			p a:hover{
+				color: yellow;
+			}
+			
+			@media (max-width: 700px) {
+				body{
+					background: url(img/phone-register.jpg) no-repeat;
+					background-size: 100%;
+				} 
+				#loginDiv{
+					/*border: 1px #FF9400 solid;*/
+					border-radius: 8%;
+					width:80%; 
+					margin: 10% auto;
+				}
+			}
+			#message{
+				color: red;
+				font-size: 14px;
+				font-weight: bold;
+				text-align: center;
+			}
+			.file{
+				width: 80px;
+				height: 80px;
+				border-radius: 50%;
+				margin: 0 auto;
+				display: block;
+			}
+			.file:hover{
+				cursor: pointer;
+			}
+		</style>
+		
+		
+	</head>
+	<body>
+		<div id="loginDiv">
+			<h1>注册</h1>
+			<p id="message"></p>
+			<form method="post" action="/user/register" enctype="multipart/form-data">
+				<div class="row">
+					<input type="file" name="file" style="display: none;"  onchange="changImg(event)" />
+					<div class="col-lg-12 col-md-12 col-xs-12">
+						<img class="file" src="img/head.png"/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-xs-12">
+						<p style="text-align: center;color: white;">点击上方图片上传头像</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-1 col-md-2 col-xs-2">
+						<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+					</div>
+					<div class="col-lg-11 col-md-10 col-xs-10">
+						<input id="name" class="input" type="text" name="name" placeholder="请输入用户名~" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-1 col-md-2 col-xs-2">
+						<span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+					</div>
+					<div class="col-lg-11 col-md-10 col-xs-10">
+						<input id="pwd" class="input" type="password" name="password" placeholder="请输入密码~" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-1 col-md-2 col-xs-2">
+						<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+					</div>
+					<div class="col-lg-11 col-md-10 col-xs-10">
+						<input id="pwd2" class="input" type="password" name="pwd2" placeholder="请确认密码~" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-1 col-md-2 col-xs-2" ></div>
+					<div class="col-lg-11 col-md-10 col-xs-10">
+						<button id="registerBtn" type="button" class="btn btn-block">注册</button>
+					</div>
+				</div>
+				<p><a href="/toLogin">已有账号？去登录</a></p>
+			</form>
+		</div>
+		<script type="text/javascript" src="jquery/jquery.min.js" ></script>
+		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js" ></script>
+		<script type="text/javascript">
+		function changImg(e){ 
+            		for (var i = 0; i < e.target.files.length; i++) {
+                	var file = e.target.files.item(i);
+                	//验证是否为图片，不是就跳出循环
+                	if (!(/^image\/.*$/i.test(file.type))) {
+                    	alert("不是图片！")
+                    	continue; 
+               		}
+                	//实例化FileReader API  
+                	var freader = new FileReader();  
+                	freader.readAsDataURL(file);  
+                	freader.onload = function(e) {  
+                    $(".file").attr("src",e.target.result);  //显示图片
+                	}  
+            	}  
+        	} 
+            $(function(){
+            	$(".file").click(function(){
+            		$("input[name='file']").click();
+            	})
+
+
+                $("#registerBtn").click(function(){
+                    var name=$("#name").val();
+                    var pwd=$("#pwd").val();
+                    var pwd1=$("#pwd2").val();
+                    var message=$("#message");
+
+
+                    if(name==" " || name==""){
+                        message.html("请输入用户名!");
+                        $("#name").focus();
+                    }else if(pwd==" " || pwd==""){
+                        message.html("请输入密码!");
+                        $("#pwd").focus();
+                    }else if(pwd1==" " || pwd1==""){
+                        message.html("请再次输入密码!");
+                        $("#pwd2").focus();
+                    }else if(pwd!=pwd1){
+                        message.html("两次密码不一致!");
+                        $("#pwd2").focus();
+                    }else{
+                        //使用Ajax判断用户名是否已存在
+						$.ajax({
+							url:"/selUserByName",
+							type:"get",
+							data:'name='+name,
+							dataType:"json",
+							success:function (data) {
+								if(data.result>0){
+									message.html("该用户名已存在！");
+									$("#name").focus();
+								}else{
+									$("form").submit();
+								}
+							}
+						})
+					}
+                })
+            })
+		</script>
+	</body>
+</html>

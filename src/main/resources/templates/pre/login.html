@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    	<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title></title>
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
+		<style>
+			body{
+				background: url(img/pc-login.jpg) no-repeat;
+				background-size: 100%;
+			}
+			#loginDiv{
+				/*border: 1px #FF9400 solid;*/
+				border-radius: 8%;
+				width:30%; 
+				margin: 10% auto;
+				height: 300px;
+				position:absolute;
+			    top:50%;
+			    left:50%;
+			    
+			    margin-top:-150px; 
+			    margin-left:-15%;
+			}
+			.input{
+				height: 35px;
+				width: 100%;
+				border: 2px #FF9400 solid;
+				background-color: transparent;
+				font-size: 16px;
+				color: #FF9400;
+				text-indent: 0.5em;
+				border-radius: 2%;
+				
+			}
+			input::-webkit-input-placeholder { /* WebKit browsers */ 
+				text-indent: 0.5em;
+				color: #FF9400; 
+				font-size: 14px;
+				font-weight: bold;
+			} 
+			
+			input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */ 
+				text-indent: 0.5em;
+				color: #FF9400; 
+				font-size: 14px;
+				font-weight: bold;
+			} 
+			
+			input::-moz-placeholder { /* Mozilla Firefox 19+ */ 
+				text-indent: 0.5em;
+				color: #FF9400; 
+				font-size: 14px;
+				font-weight: bold;
+			} 
+			
+			input:-ms-input-placeholder { /* Internet Explorer 10+ */ 
+				text-indent: 0.5em;
+				color: #FF9400;
+				font-size: 14px;
+				font-weight: bold;
+			} 
+			
+			.row{
+				margin-bottom: 20px;
+			}
+			
+			span{
+				font-size: 28px;
+				color: #FF9400;
+			}
+			button{
+				background-color: #FF9400;
+				color: white;
+			}
+			p{
+				text-align: right;
+				text-decoration: underline;
+			}
+			h1{
+				text-align: center;
+				color: #FF9400;
+			}
+			p a{
+				color: #FF9400;
+			}
+			p a:hover{
+				color: yellow;
+			}
+			#message{
+				color: red;
+				font-size: 14px;
+				font-weight: bold;
+				text-align: center;
+			}
+
+			
+			@media (max-width: 700px) {
+				body{
+					background: url(img/phone-login.jpg) no-repeat;
+					background-size: 100%;
+				} 
+				#loginDiv{
+					/*border: 1px #FF9400 solid;*/
+					border-radius: 8%;
+					width:80%; 
+					margin: 10% auto;
+					height: 300px;
+					position:absolute;
+				    top:50%;
+				    left:50%;
+				    margin-top:-150px; 
+				    margin-left:-40%;
+				}
+			}
+		</style>
+		
+		
+	</head>
+	<body>
+		<div id="loginDiv">
+			<h1>登录</h1>
+			<p id="message"></p>
+			<form method="post" action="/user/login">
+				<div class="row">
+					<div class="col-lg-1 col-md-2 col-xs-2">
+						<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+					</div>
+					<div class="col-lg-11 col-md-10 col-xs-10">
+						<input id="name" class="input" type="text" name="name" placeholder="请输入用户名~" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-1 col-md-2 col-xs-2">
+						<span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+					</div>
+					<div class="col-lg-11 col-md-10 col-xs-10">
+						<input id="pwd" class="input" type="password" name="pwd" placeholder="请输入密码~" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-1 col-md-2 col-xs-2" ></div>
+					<div class="col-lg-11 col-md-10 col-xs-10">
+						<button id="loginBtn" type="button" class="btn btn-block">登录</button>
+					</div>
+				</div>
+				<p><span></span><a href="/toRegister">还没账号？去注册</a></p>
+			</form>
+		</div>
+		<script type="text/javascript" src="jquery/jquery.min.js" ></script>
+		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js" ></script>
+		<script type="text/javascript">
+            $(function(){
+
+                $("#loginBtn").click(function(){
+                    var name=$("#name").val();
+                    var pwd=$("#pwd").val();
+                    var message=$("#message");
+                    if(name==null || name==""){
+                        message.html("请输入用户名!");
+                        $("#name").focus();
+                    }else if(pwd==null || pwd==""){
+                        message.html("请输入密码!");
+                        $("#pwd").focus();
+                    }else{
+                        $.ajax({
+                            url:"/user/login",
+                            type:"post",
+                            data:{"name":name,"pwd":pwd},
+                            dataType:"json",
+                            success:function (data) {
+                                if(data==null){
+                                    message.html("用户名或密码错误！");
+                                    $("#name").focus();
+                                }else{
+                                    location.href="/loginSuccess";
+                                }
+                            }
+                        })
+                    }
+
+                })
+            })
+		</script>
+	</body>
+</html>
